@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from pid_controller import PIDController, 
+from pid_controller import PIDController, simulate_system
 
 
 st.title("PID Controller Playground")
