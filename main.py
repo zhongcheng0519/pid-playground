@@ -1,33 +1,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from pid_controller import PIDController, 
 
-class PIDController:
-    def __init__(self, kp, ki, kd):
-        self.kp = kp
-        self.ki = ki
-        self.kd = kd
-        self.prev_error = 0
-        self.integral = 0
-
-    def compute(self, setpoint, process_variable, dt):
-        error = setpoint - process_variable
-        self.integral += error * dt
-        derivative = (error - self.prev_error) / dt
-        output = self.kp * error + self.ki * self.integral + self.kd * derivative
-        self.prev_error = error
-        return output
-
-def simulate_system(pid, setpoint, initial_value, duration, dt):
-    time = np.arange(0, duration, dt)
-    process_variable = np.zeros_like(time)
-    process_variable[0] = initial_value
-
-    for i in range(1, len(time)):
-        control_output = pid.compute(setpoint, process_variable[i-1], dt)
-        process_variable[i] = process_variable[i-1] + control_output * dt
-
-    return time, process_variable
 
 st.title("PID Controller Playground")
 
@@ -76,8 +51,17 @@ st.write("""
 4. Observe how the system responds to different PID settings.
 
 ## Understanding PID Control
-- **P (Proportional)**: Responds to the current error. Higher values result in a faster response but may cause overshooting.
-- **I (Integral)**: Responds to the accumulated error over time. Helps eliminate steady-state error but may cause oscillations.
+This implementation uses the following PID formula:
+```
+output = kP * (e_k - e_pk) + kI * e_k + kD * (e_k - 2 * e_pk + e_ppk)
+```
+Where:
+- e_k is the current error
+- e_pk is the previous error
+- e_ppk is the error before the previous error
+
+- **P (Proportional)**: Responds to the change in error. Higher values result in a faster response but may cause overshooting.
+- **I (Integral)**: Responds to the current error. Helps eliminate steady-state error but may cause oscillations.
 - **D (Derivative)**: Responds to the rate of change of error. Helps reduce overshooting and settling time.
 
 Experiment with different combinations to see how they affect the system's response!

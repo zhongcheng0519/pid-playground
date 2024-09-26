@@ -63,4 +63,22 @@ Experiment with different combinations of P, I, and D values to see how they aff
 - **I (Integral)**: Responds to the accumulated error over time. Helps eliminate steady-state error but may cause oscillations.
 - **D (Derivative)**: Responds to the rate of change of error. Helps reduce overshooting and settling time.
 
+## PID Formula
+
+The PID controller implemented in this program uses the following formula:
+
+```
+output = Kp * error + Ki * integral + Kd * derivative
+```
+
+Where:
+- `Kp` is the proportional gain
+- `Ki` is the integral gain
+- `Kd` is the derivative gain
+- `error` is the difference between the setpoint and the process variable
+- `integral` is the accumulated error over time
+- `derivative` is the rate of change of the error
+
+This formula is applied at each time step to calculate the control output, which is then used to adjust the process variable towards the desired setpoint.
+
 Have fun exploring the world of PID control!
