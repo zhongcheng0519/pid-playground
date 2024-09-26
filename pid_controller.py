@@ -3,13 +3,15 @@ import numpy as np
 def simulate_system(pid, setpoint, initial_value, duration, dt):
     time = np.arange(0, duration, dt)
     process_variable = np.zeros_like(time)
+    error = np.zeros_like(time)
     process_variable[0] = initial_value
 
     for i in range(1, len(time)):
-        control_output = pid.compute(setpoint, process_variable[i-1])
+        control_output, current_error = pid.compute(setpoint, process_variable[i-1])
         process_variable[i] = process_variable[i-1] + control_output * dt
+        error[i] = current_error
 
-    return time, process_variable
+    return time, process_variable, error
 
 class PIDController:
     def __init__(self, kp, ki, kd):
@@ -40,7 +42,7 @@ class PIDController:
 
         :param setpoint: The desired value
         :param process_variable: The current measured value
-        :return: The computed control output
+        :return: The computed control output and the current error
         """
         error = setpoint - process_variable
 
@@ -54,4 +56,4 @@ class PIDController:
         self.prev_prev_error = self.prev_error
         self.prev_error = error
 
-        return output
+        return output, error

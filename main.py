@@ -18,16 +18,30 @@ duration = st.sidebar.slider("Simulation Duration (seconds)", 1, 60, 30)
 dt = 0.1
 
 pid = PIDController(kp, ki, kd)
-time, process_variable = simulate_system(pid, setpoint, initial_value, duration, dt)
+time, process_variable, error = simulate_system(pid, setpoint, initial_value, duration, dt)
 
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(time, process_variable, label="Process Variable")
-ax.axhline(y=setpoint, color='r', linestyle='--', label="Setpoint")
-ax.set_xlabel("Time (s)")
-ax.set_ylabel("Value")
-ax.set_title("PID Controller Response")
-ax.legend()
-ax.grid(True)
+fig, ax1 = plt.subplots(figsize=(10, 6))
+
+# Plot process variable and setpoint
+ax1.plot(time, process_variable, label="Process Variable")
+ax1.axhline(y=setpoint, color='g', linestyle='--', label="Setpoint")
+ax1.set_xlabel("Time (s)")
+ax1.set_ylabel("Value")
+ax1.tick_params(axis='y')
+
+# Create a second y-axis for the error
+ax2 = ax1.twinx()
+ax2.plot(time, error, color='r', linestyle='--', label="Error")
+ax2.set_ylabel("Error")
+ax2.tick_params(axis='y')
+
+# Combine legends
+lines1, labels1 = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper right')
+
+ax1.set_title("PID Controller Response and Error")
+ax1.grid(True)
 
 st.pyplot(fig)
 
@@ -49,6 +63,7 @@ st.write("""
 2. Set the desired setpoint and initial value for the system.
 3. Choose the simulation duration.
 4. Observe how the system responds to different PID settings.
+5. The graph now shows both the process variable and the error over time.
 
 ## Understanding PID Control
 This implementation uses the following PID formula:
@@ -64,5 +79,10 @@ Where:
 - **I (Integral)**: Responds to the current error. Helps eliminate steady-state error but may cause oscillations.
 - **D (Derivative)**: Responds to the rate of change of error. Helps reduce overshooting and settling time.
 
-Experiment with different combinations to see how they affect the system's response!
+The graph now includes:
+- Process Variable (blue line): The current value of the system
+- Setpoint (green dashed line): The target value
+- Error (red dashed line): The difference between the setpoint and the process variable
+
+Experiment with different combinations to see how they affect the system's response and error!
 """)
